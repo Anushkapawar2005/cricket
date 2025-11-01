@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Cricket game</title>
+  <style>
+    body{
+      text-align: center;
+    }
+    .choice-button {
+      height: 100px;
+      width: 100px;
+      border: none;
+      margin: 10px;
+      background-color: rgb(164,212,130);
+      border-radius: 50px;
+      cursor: pointer;
+    }
+    .choice-image{
+      height:75px;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Bat Ball Stump Game</h1>
+  
+
+  <button class="choice-button" onclick="
+ let computerChoice= generateCmpChoice();
+ let resultMsg = getResult('Bat', computerChoice);
+  showResult('Bat',computerChoice,resultMsg);
+  "><img src="" alt="bat Image" class="choice-image"></button>
+
+
+  <button class="choice-button" onclick="
+    computerChoice= generateCmpChoice();
+     resultMsg = getResult('Ball', computerChoice);
+     showResult('Ball',computerChoice,resultMsg);
+  "><img src="" alt="Ball Image" class="choice-image"></button>
+
+
+  <button class="choice-button" onclick="
+  computerChoice= generateCmpChoice();
+  resultMsg = getResult('Stump', computerChoice);
+  showResult('Stump',computerChoice,resultMsg);
+  "><img src="" alt="Stump Image" class="choice-image"></button>
+
+
+
+   <h3 id="user-move"></h3>
+   <h3 id="computer-move"></h3>
+   <h3 id="result"></h3>
+   <h3 id="score"></h3>
+
+   <button onclick="localStorage.clear()
+   resetScore();
+   ">Reset</button>
+
+  <script>
+    let scoreStr = localStorage.getItem('Score');
+    let score;
+    resetScore(scoreStr);
+    function resetScore(scoreStr) {
+     score = scoreStr? JSON.parse(scoreStr) : 
+    { 
+      win:0,
+      lost:0,
+      tie:0,
+  };
+  
+    score.displayScore =  function(){
+        return `Score: win:${score.win}, lost:${score.lost}, tie: ${score.tie}`;
+      }
+      showResult();
+    }
+    
+    function generateCmpChoice()
+    {
+       //This will generate random number between 0 and 3
+      let randomNumber= Math.random()*3;
+        if(randomNumber>0 && randomNumber <=1)
+      {
+        return 'Bat';
+        //console.log('Computer choice is bat');
+      }
+      else if(randomNumber>1 && randomNumber <=2)
+      {
+        return 'Ball';
+        //console.log('Computer choice is ball');
+      }
+      else{
+        return 'Stump';
+      // console.log('Computer choice is stump');
+      }
+    }
+
+
+    function getResult(usermove, computerMove){
+            if(usermove === 'Bat')
+            {
+              if(computerMove === 'Ball'){
+                score.win++;
+                return 'User Won.';
+              }else if(computerMove === 'Bat'){
+                score.tie++;
+                return `It is tie`;
+              }else if(computerMove === 'Stump'){
+                score.lost++;
+                return 'Computer has won';
+              }
+            }
+            else if(usermove=== 'Ball')
+            {
+              if(computerMove === 'Ball'){
+                score.tie++;
+                  return 'It is tie';
+                }else if(computerMove === 'Bat'){
+                  score.lost++;
+                  return `Computer has won`;
+                }else if(computerMove === 'Stump'){
+                  score.win++;
+                  return 'User Won.';
+                }
+            }
+            else{
+              if(computerMove === 'Ball'){
+                score.lost++;
+                return 'Computer has won.';
+              }else if(computerMove === 'Bat'){
+                score.win++;
+                return `User Won.`;
+              }else if(computerMove === 'Stump'){
+                score.tie++;
+                return `It is tie.`;
+              }
+              }
+          }
+
+
+         function showResult(usermove,computerMove,result){
+          localStorage.setItem('Score',JSON.stringify(score));
+          document.querySelector('#user-move').innerText=usermove !==undefined ? `You have chosen ${usermove}` : '';
+          document.querySelector('#computer-move').innerText=computerMove ?  `Computer choice is ${computerMove} `: "";
+          document.querySelector('#result').innerText=result !== undefined ? result : '';
+          //document.querySelector('#result').innerText=result || '';
+          document.querySelector('#score').innerText=score.displayScore();
+         }
+
+  </script>
+</body>
+</html>
